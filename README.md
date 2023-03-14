@@ -17,6 +17,9 @@ The problem is structured as follows:
 $$
 \begin{align*}
 \text{total costs} &\geq 0 \\
-\text{total transportation costs} &\geq 0
+\text{total transportation costs} &\geq 0 \\
+\text{total fixed costs} &\geq 0 \\
+\text{total holding costs} &\geq 0 \\
+\text{total costs per period}_{t} &\geq 0, \forall t \in \text{times}
 \end{align*}
 $$
