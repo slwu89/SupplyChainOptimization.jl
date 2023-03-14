@@ -20,6 +20,12 @@ $$
 \text{total transportation costs} &\geq 0 \\
 \text{total fixed costs} &\geq 0 \\
 \text{total holding costs} &\geq 0 \\
-\text{total costs per period}_{t} &\geq 0, \forall t \in \text{times}
+\text{total costs per period}_{t} &\geq 0, \; t \in \text{times} \\
+\text{total transportation costs per period}_{t} &\geq 0, \; t \in \text{times} \\
+\text{total fixed costs per period}_{t} &\geq 0, \; t \in \text{times} \\
+\text{total holding costs per period}_{t} &\geq 0, \; t \in \text{times} \\
+\text{opened}_{p,s,t} & \in \{0,1\}, \; p \in \text{plants}, \; s \in \text{storages}, \; t \in \text{times} \\
+\text{opening}_{p,s,t} & \in \{0,1\}, \; p \in \text{plants}, \; s \in \text{storages}, \; t \in \text{times} \\
+\text{closing}_{p,s,t} & \in \{0,1\}, \; p \in \text{plants}, \; s \in \text{storages}, \; t \in \text{times}
 \end{align*}
 $$
