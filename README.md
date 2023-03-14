@@ -35,8 +35,8 @@ $$
 \text{used}_{l,t} & \in \\{0,1\\}, \\; l \in \text{lanes}, \\; t \in \text{times} \\
 \text{sent}_{pr,l,t} &\geq 0, \\; pr \in \text{products}, \\; l \in \text{lanes}, \\; t \in \text{times} \\
 \text{received}_{pr,l,t} &\geq 0, \\; pr \in \text{products}, \\; l \in \text{lanes}, \\; t \in \text{times} \\
-\text{s.t.} \\; \text{stored at start}_{pr,s,t=1} &= \text{initial inventory}_{pr,s}, \\; s \text{has initial inventory} pr \\
-\text{stored at start}_{pr,s,t=1} &\leq \text{stored at end}_{pr,s}, \\; s \text{does not have initial inventory} pr 
+\text{s.t.} \\; \text{stored at start}_{pr,s,t=1} &= \text{initial inventory}_{pr,s}, \\; s \\; \text{has initial inventory} \\; pr \\
+\text{stored at start}_{pr,s,t=1} &\leq \text{stored at end}_{pr,s}, \\; s \\; \text{does not have initial inventory} \\; pr 
 \end{align*}
 $$
 
