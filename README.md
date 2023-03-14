@@ -15,6 +15,8 @@ Learn more by reading the [documentation](https://SupplyChef.github.io/SupplyCha
 The problem is structured as follows:
 
 $$
-\text{total costs} \geq 0 \\
-\text{total transportation costs} \geq 0
+\begin{align*}
+\text{total costs} &\geq 0 \\
+\text{total transportation costs} &\geq 0
+\end{align*}
 $$
