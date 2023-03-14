@@ -9,3 +9,12 @@ SupplyChainOptimization.jl is a package for modeling and optimizing supply chain
 Use built-in constructs to easily model your supply chain and use powerful solvers to optimize it.
 
 Learn more by reading the [documentation](https://SupplyChef.github.io/SupplyChainOptimization.jl/dev).
+
+## Mathematical problem
+
+The problem is structured as follows:
+
+$$
+\text{total costs} \geq 0 \\
+\text{total transportation costs} \geq 0
+$$
