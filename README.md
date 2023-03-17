@@ -236,13 +236,15 @@ $$
 Calculating the total costs per period may look complex but its just bookkeeping.
 
 $$
-\text{total costs per period}_{t} = \text{total costs per period}_{t} + \text{total transportation costs per period}_{t} + \text{total fixed costs per period}_{t} \\
-+ \sum_{s\in\text{plants}\cup\text{storages}} \text{opening}_{s,t} * \text{opening cost}_{s} \\
-+ \sum_{s\in\text{plants}\cup\text{storages}} \text{closing}_{s,t} * \text{closing cost}_{s} \\ 
-+ \sum_{pr,s}\left(\sum_{l\in s_{\text{lanes in}}} \text{received}_{pr,l,t} * \text{unit handling cost}_{s,pr} \right ) \\ 
-+ \sum_{pr,sp} \text{bought}_{pr,sp,t} * \text{unit cost}_{pr,sp}  \\ 
-+ \sum_{pr,p} \text{produced}_{pr,p,t} * \text{unit cost}_{pr,p} \\
-+ \text{total holding costs}
+\begin{align*}
+\text{total costs per period}_{t} &= \text{total costs per period}_{t} + \text{total transportation costs per period}_{t} + \text{total fixed costs per period}_{t} \\
+&+ \sum_{s\in\text{plants}\cup\text{storages}} \text{opening}_{s,t} * \text{opening cost}_{s} \\
+&+ \sum_{s\in\text{plants}\cup\text{storages}} \text{closing}_{s,t} * \text{closing cost}_{s} \\ 
+&+ \sum_{pr,s}\left(\sum_{l\in s_{\text{lanes in}}} \text{received}_{pr,l,t} * \text{unit handling cost}_{s,pr} \right ) \\ 
+&+ \sum_{pr,sp} \text{bought}_{pr,sp,t} * \text{unit cost}_{pr,sp}  \\ 
+&+ \sum_{pr,p} \text{produced}_{pr,p,t} * \text{unit cost}_{pr,p} \\
+&+ \text{total holding costs}
+\end{align*}
 $$
 
 $$
