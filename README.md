@@ -14,7 +14,7 @@ Learn more by reading the [documentation](https://SupplyChef.github.io/SupplyCha
 
 The problem is structured as follows:
 
-We list variables below. Subscripts are as follows, $p$ stands for plants, $s$ for storages, $t$ for times, $pr$ for products, $l$ for lanes, $c$ for customers, $sp$ for suppliers. If bounds or conditions on subscripts are not explicitly given, assume that it "for all" values in that set.
+We list variables below. Subscripts are as follows, $p$ stands for plants, $s$ for storages, $t$ for times, $pr$ for products, $l$ for lanes, $c$ for customers, $sp$ for suppliers. If a particular subscript deviates from this definition, we will explicitly denote it (e.g. $s\in \text{plants}\cup\text{storages}$) If bounds or conditions on subscripts are not explicitly given, assume that it is for all values in that set.
 
 $$
 \begin{align*}
@@ -26,9 +26,9 @@ $$
 \text{total transportation costs per period}_{t} &\geq 0 \\
 \text{total fixed costs per period}_{t} &\geq 0 \\
 \text{total holding costs per period}_{t} &\geq 0 \\
-\text{opened}_{p,s,t} & \in \\{0,1\\} \\
-\text{opening}_{p,s,t} & \in \\{0,1\\} \\
-\text{closing}_{p,s,t} & \in \\{0,1\\} \\
+\text{opened}_{s,t} & \in \\{0,1\\}, \\; s\in \text{plants}\cup\text{storages} \\
+\text{opening}_{s,t} & \in \\{0,1\\}, \\; s\in \text{plants}\cup\text{storages} \\
+\text{closing}_{s,t} & \in \\{0,1\\}, \\; s\in \text{plants}\cup\text{storages} \\
 \text{lost sales}_{pr,c,t} &\geq 0 \\
 \text{bought}_{pr,sp,t} &\geq 0 \\
 \text{produced}_{pr,p,t} &\geq 0 \\
