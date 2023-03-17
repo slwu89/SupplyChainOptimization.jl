@@ -40,6 +40,38 @@ $$
 \end{align*}
 $$
 
+In JuMP they appear as:
+
+```julia
+@variable(m, total_costs >= 0)
+@variable(m, total_transportation_costs >= 0)
+@variable(m, total_fixed_costs >= 0)
+@variable(m, total_holding_costs >= 0)
+
+@variable(m, total_costs_per_period[times] >= 0)
+@variable(m, total_transportation_costs_per_period[times] >= 0)
+@variable(m, total_fixed_costs_per_period[times] >= 0)
+@variable(m, total_holding_costs_per_period[times] >= 0)
+
+@variable(m, opened[plants_storages, times], Bin)
+@variable(m, opening[plants_storages, times], Bin)
+@variable(m, closing[plants_storages, times], Bin)
+
+
+@variable(m, lost_sales[products, customers, times] >= 0)
+
+@variable(m, bought[products, suppliers, times] >= 0)
+
+@variable(m, produced[products, plants, times] >= 0)
+
+@variable(m, stored_at_start[products, storages, times] >= 0)
+@variable(m, stored_at_end[products, storages, times] >= 0)
+
+@variable(m, used[lanes, times], Bin)
+@variable(m, sent[products, lanes, times] >= 0)
+@variable(m, received[products, lanes, times] >= 0)
+```
+
 Constraints are below.
 
 The first set of constraints is related to ensuring that there is a logically consistent relationship between product storage, products sent and recieved, and sent and recieved products respect the limitations on the lanes to and from storage areas.
