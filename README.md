@@ -187,7 +187,7 @@ The first ensures that production can only occur at opened plants, and the time 
 
 $$
 \begin{align*}
-\text{produced}_{pr,p,t} &\leq \text{bigM}*\text{opened}_{p,t_{i}}, \; t_{i} = \min(t+p_{\text{time}_{pr}}, \\; \text{time horizon}) \\
+\text{produced}_{pr,p,t} &\leq \text{bigM}*\text{opened}_{p,t_{i}}, \\; t_{i} = \min(t+p_{\text{time}_{pr}}, \\; \text{time horizon}) \\
 \text{produced}_{pr,p,t} &= \sum_{l\in p_{\text{lanes out}}} \text{sent}_{p,l,t+p_{\text{time}_{pr}}}, \; t + p_{\text{time}_{pr}} \leq \text{time horizon} \\
 \sum_{l\in p_{\text{lanes out}}} \text{sent}_{pr,l,t} &\leq \text{maximum throughput}_{pr,p} \\
 \sum_{pr2\in\text{products}} \text{produced}_{pr2,p,t} * \text{bill of materials}_{pr2,pr,p} &= \sum_{l\in p_{\text{lanes in}}} \text{received}_{pr,l,t}
