@@ -151,6 +151,103 @@ In the JuMP language they appear as:
 @constraint(m, [s=plants_storages, t=times; isinf(s.closing_cost)], closing[s, t] == 0)
 ```
 
+The next set of constraints controls bookkeeping for items sent and recieved.
+
+$$
+\begin{align*}
+\text{stored at end}_{pr,s,t} &= \text{stored at start}_{pr,s,t} + \sum_{l\in s_{\text{lanes in}}} \text{received}_{pr,l,t} - \sum_{l\in s_{\text{lanes out}}}\text{sent}_{pr,l,t} \\
+\text{stored at start}_{pr,s,t} &= \text{stored at end}_{pr,s,t-1}, \\; t>1 \\
+\text{stored at end}_{pr,s,t} &= \text{additional stock cover}_{pr,s} * \sum_{l\in s_{\text{lanes out}}} \text{sent}_{pr,l,t} \\
+\text{bought}_{pr,sp,t} &= \sum_{l\in sp_{\text{lanes out}}} \text{sent}_{pr,l,t} \\
+\sum_{l\in sp_{\text{lanes out}}} \text{sent}_{pr,l,t} &\leq \text{maximum throughput}_{pr,sp}
+\end{align*}
+$$
+
+In JuMP they are:
+
+```julia
+@constraint(m, [p=products, s=storages, t=times], stored_at_end[p, s, t] == stored_at_start[p, s, t] 
+                                                                        + sum(received[p, l, t] for l in get_lanes_in(supply_chain, s))
+                                                                        - sum(sent[p, l, t] for l in get_lanes_out(supply_chain, s))
+                                                                        )
+@constraint(m, [p=products, s=storages, t=times; t > 1], stored_at_start[p, s, t] == stored_at_end[p, s, t - 1])
+@constraint(m, [p=products, s=storages, t=times], stored_at_end[p, s, t] >= get_additional_stock_cover(s, p) * sum(sent[p, l, t] for l in get_lanes_out(supply_chain, s)))
+
+@constraint(m, [p=products, s=suppliers, t=times], bought[p, s, t] == sum(sent[p, l, t] for l in get_lanes_out(supply_chain, s)))
+@constraint(m, [p=products, s=suppliers, t=times; !isinf(get_maximum_throughput(s, p))], sum(sent[p, l, t] for l in get_lanes_out(supply_chain, s)) <= get_maximum_throughput(s, p))
+```
+
+The next set of constraints also focus on shipping of products, as well as lead times from plants.
+
+The first ensures that production can only occur at opened plants, and the time $t_{i}$ accounts for lead time (time required for a plant to produce a product).
+
+$$
+\begin{align*}
+\text{produced}_{pr,p,t} &\leq \text{bigM}*\text{opened}_{p,t_{i}}, \; t_{i} &= \min(t+p_{\text{time}_{pr}}, \\; \text{time horizon}) \\
+\text{produced}_{pr,p,t} &= \sum_{l\in p_{\text{lanes out}}} \text{sent}_{p,l,t+p_{\text{time}_{pr}}}, \; t + p_{\text{time}_{pr}} \leq \text{time horizon} \\
+\sum_{l\in p_{\text{lanes out}}} \text{sent}_{pr,l,t} &\leq \text{maximum throughput}_{pr,p} \\
+\sum_{pr2\in\text{products}} \text{produced}_{pr2,p,t} * \text{bill of materials}_{pr2,pr,p} &= \sum_{l\in p_{\text{lanes in}}} \text{received}_{pr,l,t}
+\end{align*}
+$$
+
+```julia
+for s in plants, p in products
+    if haskey(s.time, p)
+        @constraint(m, [t=times, ti=t:min(t+s.time[p], supply_chain.horizon)], produced[p, s, t] <= bigM * opened[s, ti])
+    else
+        @constraint(m, [t=times], produced[p, s, t] == 0)
+    end
+end
+@constraint(m, [p=products, s=plants, t=times; haskey(s.time, p) && (t + s.time[p] <= supply_chain.horizon)], produced[p, s, t] == sum(sent[p, l, t + s.time[p]] for l in get_lanes_out(supply_chain, s)))
+@constraint(m, [p=products, s=plants, t=times; !isinf(get_maximum_throughput(s, p))], sum(sent[p, l, t] for l in get_lanes_out(supply_chain, s)) <= get_maximum_throughput(s, p))
+@constraint(m, [p=products, s=plants, t=times], sum(produced[p2, s, t] * get_bom(s, p2, p) for p2 in products) == sum(received[p, l, t] for l in get_lanes_in(supply_chain, s)))
+```
+
+The final set of constraints are all about demand and costs in the system.
+
+$$
+\begin{align*}
+\sum_{l\in c_{\text{lanes in}}} \text{received}_{pr,l,t} &= \text{demand}_{c,pr,t} - \text{lost sales}_{c,pr,t} \\
+\sum_{t\in\text{times}} \text{lost sales}_{pr,c} &\leq 1-\text{service level}_{c,pr} * \sum_{t} \text{demand}_{c,pr,t} \\
+\text{total transportation costs per period}_{t} &= \sum_{pr, l} \text{sent}_{pr,l,t} * \text{unit cost}_{l} \\
+\text{total transportation costs} &= \sum_{t}\text{total transportation costs per period}_{t} \\
+\text{total fixed costs per period}_{t} &= \sum_{s \in \text{plants}\cup\text{storages}, t} \text{opened}_{s,t} * \text{fixed cost}_{s} \\
+\text{total fixed costs} &= \sum_{t}\text{total fixed costs per period}_{t} \\
+\text{total holding costs per period}_{t} &= \sum_{pr, s} \text{stored at end}_{pr,s,t} * \text{unit holding cost}_{pr} \\
+\text{total holding costs} &= \sum_{t}\text{total holding costs per period}_{t} \\
+\end{align*}
+$$
+
+```julia
+@constraint(m, [p=products, c=customers, t=times], sum(received[p, l, t] for l in get_lanes_in(supply_chain, c)) == get_demand(supply_chain, c, p, t) - lost_sales[p, c, t])
+
+@constraint(m, [p=products, c=customers], sum(lost_sales[p, c, t] for t in times) <= (1 - get_service_level(supply_chain, c, p)) * sum(get_demand(supply_chain, c, p, t) for t in times))
+
+@constraint(m, [t=times], total_transportation_costs_per_period[t] == sum(sent[p, l, t] * l.unit_cost for p in products, l in lanes))
+@constraint(m, total_transportation_costs == sum(total_transportation_costs_per_period[t] for t in times))
+
+@constraint(m, [t=times], total_fixed_costs_per_period[t] == sum(opened[s, t] * s.fixed_cost for s in plants_storages))
+@constraint(m, total_fixed_costs == sum(total_fixed_costs_per_period[t] for t in times))
+
+@constraint(m, [t=times], total_holding_costs_per_period[t] == sum(stored_at_end[p, s, t] * p.unit_holding_cost for p in products, s in storages))
+@constraint(m, total_holding_costs == sum(total_holding_costs_per_period[t] for t in times))
+```
+
+Calculating the total costs per period may look complex but its just bookkeeping.
+
+```julia
+@constraint(m, [t=times], total_costs_per_period[t] == total_transportation_costs_per_period[t] + 
+                    total_fixed_costs_per_period[t] + 
+                    sum(opening[s, t] * s.opening_cost for s in plants_storages if !isinf(s.opening_cost)) + 
+                    sum(closing[s, t] * s.closing_cost for s in plants_storages if !isinf(s.closing_cost)) + 
+                    sum(sum(received[p, l, t] * s.unit_handling_cost[p] for l in get_lanes_in(supply_chain, s)) for p in products for s in storages if haskey(s.unit_handling_cost, p)) +
+                    sum(bought[p, s, t] * s.unit_cost[p] for p in products, s in suppliers if haskey(s.unit_cost, p)) +
+                    sum(produced[p, s, t] * s.unit_cost[p] for p in products, s in plants if haskey(s.unit_cost, p)) +
+                    total_holding_costs)
+
+@constraint(m, total_costs == sum(total_costs_per_period[t] for t in times))
+```
+
 ## Questions
 
   1. `stored_at_start` and `stored_at_end`; should these just only look at the initial and final time periods?
