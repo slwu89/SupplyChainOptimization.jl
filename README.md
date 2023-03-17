@@ -75,14 +75,49 @@ In the JuMP language they appear as:
 @constraint(m, [s=storages, t=times], sum(received[p, l, t] for p in products, l in get_lanes_in(supply_chain, s)) <= bigM * opened[s, t])
 ```
 
-The next set of constraints
+The next set of constraints ensures that there is consistency between opening/closing of various sites with their initial opening status.
 
-<!-- $$
+$$
 \begin{align*}
-    @constraint(m, [s=plants_storages], opening[s, 1] >= opened[s, 1] + (1 - s.initial_opened) - 1)
+\text{opening}_{s,t=1} &\geq \text{opened}_{s,t=1} + (1 - s_{\text{initial opened}}) - 1, \\; s \in \text{plants} \cup \text{storages} \\
+\text{opening}_{s,t=1} &\leq \text{opened}_{s,t=1}, \\; s \in \text{plants} \cup \text{storages} \\
+\text{opening}_{s,t=1} &\leq 1 - s_{\text{initial opened}}, \\; s \in \text{plants} \cup \text{storages} \\
+\text{opening}_{s,t} &\geq  \text{opened}_{s,t} + (1 - \text{opened}_{s,t-1}), \\; s \in \text{plants} \cup \text{storages} , \\; t>1 \\
+\text{opening}_{s,t} &\leq  \text{opened}_{s,t}, \\; s \in \text{plants} \cup \text{storages} , \\; t>1 \\
+\text{opening}_{s,t} &\leq  1-\text{opened}_{s,t-1}, \\; s \in \text{plants} \cup \text{storages} , \\; t>1 \\
+\text{closing}_{s,t=1} &\geq  (1 - \text{opened}_{s,t=1}) + s_{\text{initial opened}} - 1, \\; s \in \text{plants} \cup \text{storages} \\
+\text{closing}_{s,t=1} &\leq  1 - \text{opened}_{s,t=1}, \\; s \in \text{plants} \cup \text{storages} \\
+\text{closing}_{s,t=1} &\leq  1 - s_{\text{initial opened}}, \\; s \in \text{plants} \cup \text{storages} \\
+\text{closing}_{s,t} &\geq  (1 - \text{opened}_{s, t}) + \text{opened}_{s, t-1} - 1, \\; s \in \text{plants} \cup \text{storages}, \\; t>1 \\
+\text{closing}_{s,t} &\leq  1 - \text{opened}_{s, t}, \\; s \in \text{plants} \cup \text{storages}, \\; t>1 \\
+\text{closing}_{s,t} &\leq \text{opened}_{s, t-1}, \\; s \in \text{plants} \cup \text{storages}, \\; t>1 \\
+\text{opening}_{s,t} &= 0, \\; s \in \text{plants} \cup \text{storages}, \\; s_{\text{opening cost}} = \infty \\
+\text{closing}_{s,t} &= 0, \\; s \in \text{plants} \cup \text{storages}, \\; s_{\text{closing cost}} = \infty
 \end{align*}
-$$ -->
+$$
 
+In the JuMP language they appear as:
+
+```julia
+@constraint(m, [s=plants_storages], opening[s, 1] >= opened[s, 1] + (1 - s.initial_opened) - 1)
+@constraint(m, [s=plants_storages], opening[s, 1] <= opened[s, 1])
+@constraint(m, [s=plants_storages], opening[s, 1] <= 1 - s.initial_opened)
+
+@constraint(m, [s=plants_storages, t=times; t > 1], opening[s, t] >= opened[s, t] + (1 - opened[s, t-1]) - 1)
+@constraint(m, [s=plants_storages, t=times; t > 1], opening[s, t] <= opened[s, t])
+@constraint(m, [s=plants_storages, t=times; t > 1], opening[s, t] <= 1 - opened[s, t-1])
+
+@constraint(m, [s=plants_storages], closing[s, 1] >= (1 - opened[s, 1]) + s.initial_opened - 1)
+@constraint(m, [s=plants_storages], closing[s, 1] <= 1 - opened[s, 1])
+@constraint(m, [s=plants_storages], closing[s, 1] <= s.initial_opened)
+
+@constraint(m, [s=plants_storages, t=times; t > 1], closing[s, t] >= (1 - opened[s, t]) + opened[s, t-1] - 1)
+@constraint(m, [s=plants_storages, t=times; t > 1], closing[s, t] <= 1 - opened[s, t])
+@constraint(m, [s=plants_storages, t=times; t > 1], closing[s, t] <= opened[s, t-1])
+
+@constraint(m, [s=plants_storages, t=times; isinf(s.opening_cost)], opending[s, t] == 0)
+@constraint(m, [s=plants_storages, t=times; isinf(s.closing_cost)], closing[s, t] == 0)
+```
 
 ## Questions
 
