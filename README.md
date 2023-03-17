@@ -111,24 +111,24 @@ In the JuMP language they appear as:
 @constraint(m, [s=storages, t=times], sum(received[p, l, t] for p in products, l in get_lanes_in(supply_chain, s)) <= bigM * opened[s, t])
 ```
 
-The next set of constraints ensures that there is consistency between opening/closing of various sites with their initial opening status.
+The next set of constraints ensures that there is consistency between opening/closing of various sites with their initial opening status. In the following set of constraints $s$ always referrs to an element of $\text{plants} \cup \text{storages}$, not $\text{storages}$.
 
 $$
 \begin{align*}
-\text{opening}_{s,t=1} &\geq \text{opened}_{s,t=1} + (1 - s_{\text{initial opened}}) - 1, \\; s \in \text{plants} \cup \text{storages} \\
-\text{opening}_{s,t=1} &\leq \text{opened}_{s,t=1}, \\; s \in \text{plants} \cup \text{storages} \\
-\text{opening}_{s,t=1} &\leq 1 - s_{\text{initial opened}}, \\; s \in \text{plants} \cup \text{storages} \\
-\text{opening}_{s,t} &\geq  \text{opened}_{s,t} + (1 - \text{opened}_{s,t-1}), \\; s \in \text{plants} \cup \text{storages} , \\; t>1 \\
-\text{opening}_{s,t} &\leq  \text{opened}_{s,t}, \\; s \in \text{plants} \cup \text{storages} , \\; t>1 \\
-\text{opening}_{s,t} &\leq  1-\text{opened}_{s,t-1}, \\; s \in \text{plants} \cup \text{storages} , \\; t>1 \\
-\text{closing}_{s,t=1} &\geq  (1 - \text{opened}_{s,t=1}) + s_{\text{initial opened}} - 1, \\; s \in \text{plants} \cup \text{storages} \\
-\text{closing}_{s,t=1} &\leq  1 - \text{opened}_{s,t=1}, \\; s \in \text{plants} \cup \text{storages} \\
-\text{closing}_{s,t=1} &\leq  1 - s_{\text{initial opened}}, \\; s \in \text{plants} \cup \text{storages} \\
-\text{closing}_{s,t} &\geq  (1 - \text{opened}_{s, t}) + \text{opened}_{s, t-1} - 1, \\; s \in \text{plants} \cup \text{storages}, \\; t>1 \\
-\text{closing}_{s,t} &\leq  1 - \text{opened}_{s, t}, \\; s \in \text{plants} \cup \text{storages}, \\; t>1 \\
-\text{closing}_{s,t} &\leq \text{opened}_{s, t-1}, \\; s \in \text{plants} \cup \text{storages}, \\; t>1 \\
-\text{opening}_{s,t} &= 0, \\; s \in \text{plants} \cup \text{storages}, \\; s_{\text{opening cost}} = \infty \\
-\text{closing}_{s,t} &= 0, \\; s \in \text{plants} \cup \text{storages}, \\; s_{\text{closing cost}} = \infty
+\text{opening}_{s,t=1} &\geq \text{opened}_{s,t=1} + (1 - s_{\text{initial opened}}) - 1 \\
+\text{opening}_{s,t=1} &\leq \text{opened}_{s,t=1} \\
+\text{opening}_{s,t=1} &\leq 1 - s_{\text{initial opened}} \\
+\text{opening}_{s,t} &\geq  \text{opened}_{s,t} + (1 - \text{opened}_{s,t-1}), \\; t>1 \\
+\text{opening}_{s,t} &\leq  \text{opened}_{s,t}, \\; t>1 \\
+\text{opening}_{s,t} &\leq  1-\text{opened}_{s,t-1}, \\; t>1 \\
+\text{closing}_{s,t=1} &\geq  (1 - \text{opened}_{s,t=1}) + s_{\text{initial opened}} - 1 \\
+\text{closing}_{s,t=1} &\leq  1 - \text{opened}_{s,t=1} \\
+\text{closing}_{s,t=1} &\leq  1 - s_{\text{initial opened}} \\
+\text{closing}_{s,t} &\geq  (1 - \text{opened}_{s, t}) + \text{opened}_{s, t-1} - 1, \\; t>1 \\
+\text{closing}_{s,t} &\leq  1 - \text{opened}_{s, t}, \\; t>1 \\
+\text{closing}_{s,t} &\leq \text{opened}_{s, t-1}, \\; t>1 \\
+\text{opening}_{s,t} &= 0, \\; s_{\text{opening cost}} = \infty \\
+\text{closing}_{s,t} &= 0, \\; s_{\text{closing cost}} = \infty
 \end{align*}
 $$
 
