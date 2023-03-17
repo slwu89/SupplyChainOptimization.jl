@@ -269,7 +269,3 @@ $$
 
 @constraint(m, total_costs == sum(total_costs_per_period[t] for t in times))
 ```
-
-## Questions
-
-  1. `stored_at_start` and `stored_at_end`; should these just only look at the initial and final time periods?
