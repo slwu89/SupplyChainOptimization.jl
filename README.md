@@ -247,6 +247,8 @@ $$
 \end{align*}
 $$
 
+and the grant total cost:
+
 $$
 \text{total costs} = \sum_{t} \text{total costs per period}_{t}
 $$
