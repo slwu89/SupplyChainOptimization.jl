@@ -12,7 +12,9 @@ Learn more by reading the [documentation](https://SupplyChef.github.io/SupplyCha
 
 ## Mathematical problem
 
-The problem is structured as follows:
+We describe the problem below.
+
+### Variables
 
 We list variables below. Subscripts are as follows, $p$ stands for plants, $s$ for storages, $t$ for times, $pr$ for products, $l$ for lanes, $c$ for customers, $sp$ for suppliers. If a particular subscript deviates from this definition, we will explicitly denote it (e.g. $s\in \text{plants}\cup\text{storages}$) If bounds or conditions on subscripts are not explicitly given, assume that it is for all values in that set.
 
@@ -71,6 +73,8 @@ In JuMP they appear as:
 @variable(m, sent[products, lanes, times] >= 0)
 @variable(m, received[products, lanes, times] >= 0)
 ```
+
+### Constraints
 
 Constraints are below.
 
