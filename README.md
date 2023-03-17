@@ -89,7 +89,7 @@ $$
 \sum_{pr} \text{sent}_{pr,l,t} &\leq \text{bigM} * \text{used}_{l,t} \\
 \sum_{pr} \text{sent}_{pr,l,t} &\geq l_{\text{minimum quantity}} * \text{used}_{l,t} \\
 \sum_{pr,l\in s_{\text{lanes out}}} \text{sent}_{pr,l,t}  &\leq \text{bigM} * \text{opened}_{s,t} \\
-\sum_{l\in s_{\text{lanes out}}} \text{sent}_{pr,l,t}  &\leq \text{max throughput}(s,pr) \\
+\sum_{l\in s_{\text{lanes out}}} \text{sent}_{pr,l,t}  &\leq \text{max throughput}_{s,pr} \\
 \sum_{l\in s_{\text{lanes in}}} \text{received}_{pr,l,t} &\leq \text{bigM} * \text{opened}_{s,t} \\
 \end{align*}
 $$
