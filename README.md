@@ -26,17 +26,17 @@ $$
 \text{total transportation costs per period}_{t} &\geq 0, \\; t \in \text{times} \\
 \text{total fixed costs per period}_{t} &\geq 0, \\; t \in \text{times} \\
 \text{total holding costs per period}_{t} &\geq 0, \\; t \in \text{times} \\
-\text{opened}_{p,s,t} & \in \\{0,1\\}, \\; p \in \text{plants}, \\; s \in \text{storages}, \\; t \in \text{times} \\
-\text{opening}_{p,s,t} & \in \\{0,1\\}, \\; p \in \text{plants}, \\; s \in \text{storages}, \\; t \in \text{times} \\
-\text{closing}_{p,s,t} & \in \\{0,1\\}, \\; p \in \text{plants}, \\; s \in \text{storages}, \\; t \in \text{times} \\
-\text{lost sales}_{pr,c,t} &\geq 0, \\; pr \in \text{products}, \\; c \in \text{customers}, \\; t \in \text{times} \\
-\text{bought}_{pr,sp,t} &\geq 0, \\; pr \in \text{products}, \\; sp \in \text{suppliers}, \\; t \in \text{times} \\
-\text{produced}_{pr,p,t} &\geq 0, \\; pr \in \text{products}, \\; p \in \text{plants}, \\; t \in \text{times} \\
-\text{stored at start}_{pr,s,t} &\geq 0, \\; pr \in \text{products}, \\; s \in \text{storages}, \\; t \in \text{times} \\
-\text{stored at end}_{pr,s,t} &\geq 0, \\; pr \in \text{products}, \\; s \in \text{storages}, \\; t \in \text{times} \\
-\text{used}_{l,t} & \in \\{0,1\\}, \\; l \in \text{lanes}, \\; t \in \text{times} \\
-\text{sent}_{pr,l,t} &\geq 0, \\; pr \in \text{products}, \\; l \in \text{lanes}, \\; t \in \text{times} \\
-\text{received}_{pr,l,t} &\geq 0, \\; pr \in \text{products}, \\; l \in \text{lanes}, \\; t \in \text{times}
+\text{opened}_{p,s,t} & \in \\{0,1\\} \\
+\text{opening}_{p,s,t} & \in \\{0,1\\} \\
+\text{closing}_{p,s,t} & \in \\{0,1\\} \\
+\text{lost sales}_{pr,c,t} &\geq 0 \\
+\text{bought}_{pr,sp,t} &\geq 0 \\
+\text{produced}_{pr,p,t} &\geq 0 \\
+\text{stored at start}_{pr,s,t} &\geq 0 \\
+\text{stored at end}_{pr,s,t} &\geq 0 \\
+\text{used}_{l,t} & \in \\{0,1\\} \\
+\text{sent}_{pr,l,t} &\geq 0 \\
+\text{received}_{pr,l,t} &\geq 0
 \end{align*}
 $$
 
