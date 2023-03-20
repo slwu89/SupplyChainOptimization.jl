@@ -191,8 +191,8 @@ function create_network_optimization_model(supply_chain, optimizer, bigM=100_000
     #@constraint(m, [p=products, c=customers, t=times], sum(serviced_by[p, s, c, t] for s in storages) <= 1)
     #@constraint(m, [p=products, s=storages, c=customers, t=times], sum(received[p, l, t] for l in get_lanes_in(supply_chain, c) if l.origin == s) <= bigM * serviced_by[p, s, c, t])
 
-    @constraint(m, [p=products, s=storages; haskey(s.initial_inventory, p)], stored_at_start[p, s, 1] == s.initial_inventory[p])
-    @constraint(m, [p=products, s=storages; !haskey(s.initial_inventory, p)], stored_at_start[p, s, 1] <= stored_at_end[p, s, supply_chain.horizon])
+    m[:storage_initial_inventory] = @constraint(m, [p=products, s=storages; haskey(s.initial_inventory, p)], stored_at_start[p, s, 1] == s.initial_inventory[p])
+    m[] = @constraint(m, [p=products, s=storages; !haskey(s.initial_inventory, p)], stored_at_start[p, s, 1] <= stored_at_end[p, s, supply_chain.horizon])
 
     @constraint(m, [p=products, l=lanes, t=times; t > l.time], received[p, l, t] == sent[p, l, t - l.time])
     @constraint(m, [p=products, l=lanes, t=times; t <= l.time], received[p, l, t] == 0)

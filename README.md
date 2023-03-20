@@ -212,7 +212,7 @@ The final set of constraints are all about demand and costs in the system.
 $$
 \begin{align*}
 \sum_{l\in c_{\text{lanes in}}} \text{received}_{pr,l,t} &= \text{demand}_{c,pr,t} - \text{lost sales}_{c,pr,t} \\
-\sum_{t\in\text{times}} \text{lost sales}_{pr,c} &\leq 1-\text{service level}_{c,pr} * \sum_{t} \text{demand}_{c,pr,t} \\
+\sum_{t\in\text{times}} \text{lost sales}_{pr,c,t} &\leq 1-\text{service level}_{c,pr} * \sum_{t} \text{demand}_{c,pr,t} \\
 \text{total transportation costs per period}_{t} &= \sum_{pr, l} \text{sent}_{pr,l,t} * \text{unit cost}_{l} \\
 \text{total transportation costs} &= \sum_{t}\text{total transportation costs per period}_{t} \\
 \text{total fixed costs per period}_{t} &= \sum_{s \in \text{plants}\cup\text{storages}, t} \text{opened}_{s,t} * \text{fixed cost}_{s} \\
