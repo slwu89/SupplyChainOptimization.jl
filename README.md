@@ -78,7 +78,7 @@ In JuMP they appear as:
 
 The first set of constraints is related to ensuring that there is a logically consistent relationship between product storage, products sent and recieved, and sent and recieved products respect the limitations on the lanes to and from storage areas.
 
-  1. Storage sites with initial inventory are reflected in stored at start, the amount of product at the start of a time step.
+  1. Storage sites that have initial inventory have it added to stored at start.
   2. Storage sites without initial inventory (i.e. 0) have less than or equal to the amount at the end (consistency).
   3. Products recieved through a shipping lane at $t$ are equal to those sent through that lane at time $t-l_{\text{time}}$.
   4. No products can be recieved through a shipping lane at time 0.
@@ -88,6 +88,8 @@ The first set of constraints is related to ensuring that there is a logically co
   8. Products sent along lanes out from an opened storage site to a customer should equal the customer's deman for that product at that time.
   9. Sum of all products sent out on lanes connected to a storage site should be less than the max throughput of the storage site.
   10. All products recieved through lanes into an open storage site should be less than some maximum.
+
+Mathematically they are given below:
 
 $$
 \begin{align*}
@@ -123,6 +125,23 @@ In the JuMP language they appear as:
 ```
 
 The next set of constraints ensures that there is consistency between opening/closing of various sites with their initial opening status. In the following set of constraints $s$ always referrs to an element of $\text{plants} \cup \text{storages}$, not $\text{storages}$.
+
+  11. Makes sure there is consistency in initial opening, opened, and initial opening status at time 1.
+  12. A site cannot be opening at time 1 and not be opened at time 1.
+  13. A site cannot be opening if it was already initially opened.
+  14. Makes sure there is consistency between opening and opened status for times t>1.
+  15. A site cannot be opening and not opened at time t>1.
+  16. A site opening at time $t$ should have been closed at time $t-1$ for times t>1.
+  17. Makes sure there is consistency between closing, opened, and initial opening status at time 1.
+  18. A site cannot be closing and opened at time 1.
+  19. A site closing at time 1 must have been initially opened.
+  20. Makes sure there is consistency between closing, opened, and initial opening status at t>1.
+  21. A site cannot be closing and opened at t>1.
+  22. A site closing at time t>1 must have been opened at time t-1.
+  23. Sites with infinite opening costs must never open.
+  24. Sites with infinite closing costs must never close.
+
+Mathematically they are given below:
 
 $$
 \begin{align*}
@@ -162,11 +181,13 @@ In the JuMP language they appear as:
 @constraint(m, [s=plants_storages, t=times; t > 1], closing[s, t] <= 1 - opened[s, t])
 @constraint(m, [s=plants_storages, t=times; t > 1], closing[s, t] <= opened[s, t-1])
 
-@constraint(m, [s=plants_storages, t=times; isinf(s.opening_cost)], opending[s, t] == 0)
+@constraint(m, [s=plants_storages, t=times; isinf(s.opening_cost)], opening[s, t] == 0)
 @constraint(m, [s=plants_storages, t=times; isinf(s.closing_cost)], closing[s, t] == 0)
 ```
 
 The next set of constraints controls bookkeeping for items sent and recieved.
+
+Mathematically they are:
 
 $$
 \begin{align*}
