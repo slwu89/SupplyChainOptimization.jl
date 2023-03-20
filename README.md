@@ -187,13 +187,19 @@ In the JuMP language they appear as:
 
 The next set of constraints controls bookkeeping for items sent and recieved.
 
+  25. The amount of product stored at the end of a time step at a storage site must equal the amount stored at the start, plus amount recieved, minus amount sent.
+  26. For t>1, the amount stored at start of time t must equal the amount stored at end of t-1.
+  27. The amount stored at end should be greater that the sum of all product sent multiplied by the required addditional stock cover for each unit.
+  28. Amount of product bought from a certain supplier at a time equals the amount that it has sent out at that time.
+  29. For suppliers with finite maximum throughput, the total amount sent must be less than that maximum.
+
 Mathematically they are:
 
 $$
 \begin{align*}
 \text{stored at end}_{pr,s,t} &= \text{stored at start}_{pr,s,t} + \sum_{l\in s_{\text{lanes in}}} \text{received}_{pr,l,t} - \sum_{l\in s_{\text{lanes out}}}\text{sent}_{pr,l,t} \\
 \text{stored at start}_{pr,s,t} &= \text{stored at end}_{pr,s,t-1}, \\; t>1 \\
-\text{stored at end}_{pr,s,t} &= \text{additional stock cover}_{pr,s} * \sum_{l\in s_{\text{lanes out}}} \text{sent}_{pr,l,t} \\
+\text{stored at end}_{pr,s,t} &\geq \text{additional stock cover}_{pr,s} * \sum_{l\in s_{\text{lanes out}}} \text{sent}_{pr,l,t} \\
 \text{bought}_{pr,sp,t} &= \sum_{l\in sp_{\text{lanes out}}} \text{sent}_{pr,l,t} \\
 \sum_{l\in sp_{\text{lanes out}}} \text{sent}_{pr,l,t} &\leq \text{maximum throughput}_{pr,sp}
 \end{align*}
@@ -215,7 +221,12 @@ In JuMP they are:
 
 The next set of constraints also focus on shipping of products, as well as lead times from plants.
 
-The first ensures that production can only occur at opened plants, and the time $t_{i}$ accounts for lead time (time required for a plant to produce a product).
+  30. Production can only occur at opened plants, and the time $t_{i}$ accounts for lead time (time required for a plant to produce a product).
+  31. The amount of product produced by a plant at time t should be equal to the amount shipped out after the amount of time equal to production lead time has elapsed.
+  32. The amount of product sent out by a plant should be less than some maximum (for finite maximums).
+  33. The amount of materials recieved pr to produce the amount of product pr2, should equal the amount of pr2 produced multiplied by the amount of pr needed to make one unit of pr2.
+
+Mathematically they are:
 
 $$
 \begin{align*}
@@ -239,7 +250,7 @@ end
 @constraint(m, [p=products, s=plants, t=times], sum(produced[p2, s, t] * get_bom(s, p2, p) for p2 in products) == sum(received[p, l, t] for l in get_lanes_in(supply_chain, s)))
 ```
 
-The final set of constraints are all about demand and costs in the system.
+The final set of constraints are all about demand and costs in the system. As these are relatively straightforward we do not provide detailed explanations, only remarking that in the first `lost_sales` are demands from customers which cannot be fulfilled.
 
 $$
 \begin{align*}
