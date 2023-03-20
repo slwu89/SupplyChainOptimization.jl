@@ -144,7 +144,7 @@ end
 """
 Creates an optimization model.
 """
-function create_network_optimization_model(supply_chain, optimizer, bigM=100_000)
+function create_network_optimization_model(supply_chain, optimizer, bigM=100_000; string_names = false)
     check_model(supply_chain)
 
     times = 1:supply_chain.horizon
@@ -157,7 +157,7 @@ function create_network_optimization_model(supply_chain, optimizer, bigM=100_000
     lanes = supply_chain.lanes
 
     m = Model(optimizer)#; bridge_constraints = false)
-    set_string_names_on_creation(m, false)
+    set_string_names_on_creation(m, string_names)
 
     @variable(m, total_costs >= 0)
     @variable(m, total_transportation_costs >= 0)

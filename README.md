@@ -89,6 +89,7 @@ $$
 \sum_{pr} \text{sent}_{pr,l,t} &\leq \text{bigM} * \text{used}_{l,t} \\
 \sum_{pr} \text{sent}_{pr,l,t} &\geq l_{\text{minimum quantity}} * \text{used}_{l,t} \\
 \sum_{pr,l\in s_{\text{lanes out}}} \text{sent}_{pr,l,t}  &\leq \text{bigM} * \text{opened}_{s,t} \\
+\sum_{l\in s_{\text{lanes out}}; \\; l_{\text{destination}}=c} \text{sent}_{pr,l,t} &\leq \text{demand}_{pr,c,t} * \text{opened}_{s,t} \\
 \sum_{l\in s_{\text{lanes out}}} \text{sent}_{pr,l,t}  &\leq \text{max throughput}_{s,pr} \\
 \sum_{l\in s_{\text{lanes in}}} \text{received}_{pr,l,t} &\leq \text{bigM} * \text{opened}_{s,t} \\
 \end{align*}
@@ -107,6 +108,7 @@ In the JuMP language they appear as:
 @constraint(m, [l=lanes, t=times; l.minimum_quantity > 0], sum(sent[p, l, t] for p in products) >= l.minimum_quantity * used[l, t])
 
 @constraint(m, [s=storages, t=times], sum(sent[p, l, t] for p in products, l in get_lanes_out(supply_chain, s)) <= bigM * opened[s, t])
+@constraint(m, [p=products, s=storages, c=customers, t=times], sum(sent[p, l, t] for l in filter(l -> l.destination == c, get_lanes_out(supply_chain, s))) <= get_demand(supply_chain, c, p, t) * opened[s, t])
 @constraint(m, [p=products, s=storages, t=times; !isinf(get_maximum_throughput(s, p))], sum(sent[p, l, t] for l in get_lanes_out(supply_chain, s)) <= get_maximum_throughput(s, p))
 @constraint(m, [s=storages, t=times], sum(received[p, l, t] for p in products, l in get_lanes_in(supply_chain, s)) <= bigM * opened[s, t])
 ```
