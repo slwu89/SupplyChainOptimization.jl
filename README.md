@@ -78,15 +78,22 @@ In JuMP they appear as:
 
 The first set of constraints is related to ensuring that there is a logically consistent relationship between product storage, products sent and recieved, and sent and recieved products respect the limitations on the lanes to and from storage areas.
 
-  1. blah: $\text{stored at start}_{pr,s,t=1} &= \text{initial inventory}_{pr,s}, \\; s \\; \text{has initial inventory of} \\; pr$: this constraint blah  
-
-
+  1. Storage sites with initial inventory are reflected in stored at start, the amount of product at the start of a time step.
+  2. Storage sites without initial inventory (i.e. 0) have less than or equal to the amount at the end (consistency).
+  3. Products recieved through a shipping lane at $t$ are equal to those sent through that lane at time $t-l_{\text{time}}$.
+  4. No products can be recieved through a shipping lane at time 0.
+  5. For each used lane, the sent products are less than some maximum.
+  6. For each used lane with a minimum quantity per time unit that the send products are equal or greater than it.
+  7. For opened storages, products sent along lanes out are less than some maximum.
+  8. Products sent along lanes out from an opened storage site to a customer should equal the customer's deman for that product at that time.
+  9. Sum of all products sent out on lanes connected to a storage site should be less than the max throughput of the storage site.
+  10. All products recieved through lanes into an open storage site should be less than some maximum.
 
 $$
 \begin{align*}
 \text{stored at start}_{pr,s,t=1} &= \text{initial inventory}_{pr,s}, \\; s \\; \text{has initial inventory} \\; pr \\
 \text{stored at start}_{pr,s,t=1} &\leq \text{stored at end}_{pr,s,t=t_{end}}, \\; s \\; \text{does not have initial inventory} \\; pr \\
-\text{received}_{pr,l,t} &= \text{sent}_{p,l,t-l_{time}}, \\; t \geq l_{time} \\
+\text{received}_{pr,l,t} &= \text{sent}_{p,l,t-l_{\text{time}}}, \\; t \geq l_{\text{time}} \\
 \text{received}_{pr,l,t} &= 0, \\; t = 0 \\
 \sum_{pr} \text{sent}_{pr,l,t} &\leq \text{bigM} * \text{used}_{l,t} \\
 \sum_{pr} \text{sent}_{pr,l,t} &\geq l_{\text{minimum quantity}} * \text{used}_{l,t} \\
