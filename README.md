@@ -312,3 +312,11 @@ $$
 
 @constraint(m, total_costs == sum(total_costs_per_period[t] for t in times))
 ```
+
+### Objective
+
+The final objective function is simply to minimize the total costs. In JuMP it is given as:
+
+```julia
+@objective(m, Min, 1.0 * total_costs)
+```
