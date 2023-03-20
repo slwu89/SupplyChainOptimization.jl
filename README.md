@@ -76,9 +76,11 @@ In JuMP they appear as:
 
 ### Constraints
 
-Constraints are below.
-
 The first set of constraints is related to ensuring that there is a logically consistent relationship between product storage, products sent and recieved, and sent and recieved products respect the limitations on the lanes to and from storage areas.
+
+  1. $\text{stored at start}_{pr,s,t=1} &= \text{initial inventory}_{pr,s}, \\; s \\; \text{has initial inventory of} \\; pr$: this constraint blah  
+
+
 
 $$
 \begin{align*}
